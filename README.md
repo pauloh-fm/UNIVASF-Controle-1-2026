@@ -5,6 +5,7 @@ Este repositório contém os códigos de simulação, funções de transferênci
 ---
 ## Colaboradores
 - Paulo Henrique de Farias Martins
+- Hellian Sampaio Silva Peixinho
 ## 📌 Visão Geral do Projeto
 
 A modelagem no tempo é um pilar fundamental da engenharia de controle moderna. Ao contrário da abordagem na frequência (Funções de Transferência via Transformada de Laplace), a modelagem no domínio do tempo permite analisar sistemas lineares e não lineares, variantes e invariantes no tempo, além de sistemas com múltiplas entradas e múltiplas saídas (MIMO).
