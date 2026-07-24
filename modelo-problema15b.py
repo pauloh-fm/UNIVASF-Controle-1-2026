@@ -1,10 +1,10 @@
 """
-Módulo modelo.py — Núcleo de Cálculos Matemáticos Puros & Geração do Gráfico Matplotlib
-Capítulo 3, Problema 15(a) - Modelagem no Domínio do Tempo (Norman Nise)
+Módulo modelo-problema15b.py — Núcleo de Cálculos Matemáticos Puros & Geração do Gráfico Matplotlib
+Capítulo 3, Problema 15(b) - Modelagem no Domínio do Tempo (Norman Nise)
 
 Este arquivo contém a lógica matemática, representação no espaço de estados,
 dedução algébrica via SymPy, cálculo de polos, simulação numérica e geração do gráfico Matplotlib.
-Pode ser executado de forma totalmente autônoma fora deste projeto.
+Pode ser executado de forma totalmente autônoma.
 """
 
 import os
@@ -16,34 +16,36 @@ import matplotlib.pyplot as plt
 
 def obter_matrizes():
     """
-    Retorna as matrizes A, B, C e D do Problema 15(a) como arrays NumPy.
+    Retorna as matrizes A, B, C e D do Problema 15(b) como arrays NumPy.
     
-    A: (4x4) Matriz de dinâmica interna do sistema
-    B: (4x1) Vetor de entrada
-    C: (1x4) Vetor de saída
+    A: (5x5) Matriz de dinâmica interna do sistema
+    B: (5x1) Vetor de entrada
+    C: (1x5) Vetor de saída
     D: (1x1) Transmissão direta
     """
     A = np.array([
-        [0.0,  1.0,  5.0,  0.0],
-        [0.0,  0.0,  1.0,  0.0],
-        [0.0,  0.0,  0.0,  1.0],
-        [-7.0, -9.0, -2.0, -3.0]
+        [ 3.0,  1.0,  0.0,  4.0, -2.0],
+        [-3.0,  5.0, -5.0,  2.0, -1.0],
+        [ 0.0,  1.0, -1.0,  2.0,  8.0],
+        [-7.0,  6.0, -3.0, -4.0,  0.0],
+        [-6.0,  0.0,  4.0, -3.0,  1.0]
     ], dtype=float)
 
     B = np.array([
-        [0.0],
-        [5.0],
+        [2.0],
+        [7.0],
         [8.0],
-        [2.0]
+        [5.0],
+        [4.0]
     ], dtype=float)
 
-    C = np.array([[1.0, 3.0, 6.0, 6.0]], dtype=float)
+    C = np.array([[1.0, -2.0, -9.0, 7.0, 6.0]], dtype=float)
     D = np.array([[0.0]], dtype=float)
 
     # Validação de dimensões
-    assert A.shape == (4, 4), f"Dimensão de A incorreta: {A.shape}"
-    assert B.shape == (4, 1), f"Dimensão de B incorreta: {B.shape}"
-    assert C.shape == (1, 4), f"Dimensão de C incorreta: {C.shape}"
+    assert A.shape == (5, 5), f"Dimensão de A incorreta: {A.shape}"
+    assert B.shape == (5, 1), f"Dimensão de B incorreta: {B.shape}"
+    assert C.shape == (1, 5), f"Dimensão de C incorreta: {C.shape}"
     assert D.shape == (1, 1), f"Dimensão de D incorreta: {D.shape}"
 
     return A, B, C, D
@@ -70,20 +72,22 @@ def obter_funcao_transferencia_simbolica():
     s = sp.symbols('s')
 
     A_mat = sp.Matrix([
-        [0,  1,  5,  0],
-        [0,  0,  1,  0],
-        [0,  0,  0,  1],
-        [-7, -9, -2, -3]
+        [ 3,  1,  0,  4, -2],
+        [-3,  5, -5,  2, -1],
+        [ 0,  1, -1,  2,  8],
+        [-7,  6, -3, -4,  0],
+        [-6,  0,  4, -3,  1]
     ])
 
     B_mat = sp.Matrix([
-        [0],
-        [5],
+        [2],
+        [7],
         [8],
-        [2]
+        [5],
+        [4]
     ])
 
-    C_mat = sp.Matrix([[1, 3, 6, 6]])
+    C_mat = sp.Matrix([[1, -2, -9, 7, 6]])
     D_mat = sp.Matrix([[0]])
 
     I = sp.eye(A_mat.rows)
@@ -117,8 +121,8 @@ def obter_polos_e_estabilidade():
     estabilidade = "instável" if tem_polo_instavel else "estável"
 
     justificativa = (
-        "Existe pelo menos um par de polos com parte real positiva no semiplano direito (RHP), "
-        "o que ocasiona uma resposta no tempo com oscilações de amplitude exponencialmente crescente."
+        "Existe pelo menos um polo com parte real positiva no semiplano direito (RHP), "
+        "o que gera uma resposta temporal com crescimento exponencial indeterminado."
         if tem_polo_instavel else
         "Todos os polos possuem parte real estritamente negativa (semiplano esquerdo LHP)."
     )
@@ -126,7 +130,7 @@ def obter_polos_e_estabilidade():
     return polos_ordenados, estabilidade, justificativa
 
 
-def simular_degrau(sistema, tempo_final=5.0, quantidade_pontos=1000):
+def simular_degrau(sistema, tempo_final=2.0, quantidade_pontos=1000):
     """
     Simula a resposta temporal do sistema LTI a uma entrada degrau unitário r(t) = 1(t).
 
@@ -147,7 +151,7 @@ def gerar_grafico_matplotlib(tempo, saida, caminho_imagem=None):
     Gera e salva a imagem PNG da resposta ao degrau utilizando Matplotlib.
     """
     if caminho_imagem is None:
-        caminho_imagem = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resposta_degrau.png")
+        caminho_imagem = os.path.join(os.path.dirname(os.path.abspath(__file__)), "resposta_degrau_15b.png")
 
     diretorio_destino = os.path.dirname(caminho_imagem)
     if diretorio_destino and not os.path.exists(diretorio_destino):
@@ -156,11 +160,11 @@ def gerar_grafico_matplotlib(tempo, saida, caminho_imagem=None):
     fig, ax = plt.subplots(figsize=(10, 5), dpi=150, facecolor='white')
     ax.set_facecolor('white')
     
-    ax.plot(tempo, saida, color='#2563eb', linewidth=2, label='y(t) - Saída do Sistema')
+    ax.plot(tempo, saida, color='#dc2626', linewidth=2, label='y(t) - Saída do Sistema (Instável)')
     ax.axhline(0, color='#64748b', linestyle='--', linewidth=1)
     ax.axhline(1, color='#059669', linestyle=':', linewidth=1.5, label='r(t) = 1 - Entrada Degrau')
 
-    ax.set_title('Capítulo 3, Problema 15(a) — Resposta ao Degrau Unitário (Matplotlib Python)', fontsize=12, fontweight='bold', color='#0f172a', pad=12)
+    ax.set_title('Capítulo 3, Problema 15(b) — Resposta ao Degrau Unitário (Python Control / Matplotlib)', fontsize=12, fontweight='bold', color='#0f172a', pad=12)
     ax.set_xlabel('Tempo (s)', fontsize=10, color='#0f172a')
     ax.set_ylabel('Saída y(t)', fontsize=10, color='#0f172a')
     ax.tick_params(colors='#0f172a', labelsize=9)
@@ -178,7 +182,7 @@ def gerar_grafico_matplotlib(tempo, saida, caminho_imagem=None):
 
 if __name__ == "__main__":
     A, B, C, D = obter_matrizes()
-    print("=== MATRIZES DO ESPAÇO DE ESTADOS ===")
+    print("=== MATRIZES DO ESPAÇO DE ESTADOS (15b) ===")
     print("A =\n", A)
     print("B =\n", B)
     print("C =\n", C)
@@ -193,7 +197,8 @@ if __name__ == "__main__":
     polos, est, just = obter_polos_e_estabilidade()
     print("\n=== ANÁLISE DE POLOS E ESTABILIDADE ===")
     for idx, p in enumerate(polos, 1):
-        print(f"Polo {idx}: {p.real:.6f} + {p.imag:.6f}j")
+        sign = "+" if p.imag >= 0 else "-"
+        print(f"Polo {idx}: {p.real:.6f} {sign} {abs(p.imag):.6f}j")
     print(f"Estabilidade: {est}")
     print(f"Justificativa: {just}")
 
